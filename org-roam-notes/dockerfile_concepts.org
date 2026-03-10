@@ -1,0 +1,37 @@
+
+:PROPERTIES:
+:ID:       20251104-dockerfile-concepts
+:END:
+#+TITLE: Dockerfile Concepts
+#+file_tags: :docker:dockerfile:
+
+A =Dockerfile= is a text document that contains all the commands a user could call on the command line to assemble an image. It's important to understand how these instructions create [[file:docker_layers.org][Docker Layers]].
+
+The =setup/Dockerfile= is used to build a custom Jenkins image.
+
+* Key Instructions in =Dockerfile=
+
+** =FROM=
+   - Sets the base image for subsequent instructions.
+   - =FROM jenkins/jenkins:2.480-jdk17= uses a specific version of the official Jenkins image with JDK 17.
+
+** =USER=
+   - Sets the user name (or UID) to use when running the image and for any =RUN=, =CMD=, and =ENTRYPOINT= instructions that follow it.
+   - =USER root= switches to the root user to install packages.
+   - =USER jenkins= switches back to the non-privileged =jenkins= user.
+
+** =RUN=
+   - Executes any commands in a new layer on top of the current image and commits the results.
+   - Used here to update the package list (=apt-get update=) and install software like =docker-ce-cli= and Jenkins plugins (=jenkins-plugin-cli=).
+
+** =COPY=
+   - Copies new files or directories from =<src>= and adds them to the filesystem of the container at the path =<dest>=.
+
+** =WORKDIR=
+   - Sets the working directory for any =RUN=, =CMD=, =ENTRYPOINT=, =COPY= and =ADD= instructions that follow it.
+
+** =CMD=
+   - Provide defaults for an executing container. There can only be one =CMD= instruction in a Dockerfile.
+
+** =ENTRYPOINT=
+    - Configures a container that will run as an executable.

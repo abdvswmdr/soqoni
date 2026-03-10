@@ -1,0 +1,21 @@
+
+:PROPERTIES:
+:ID:       20251104-jenkins-concepts
+:END:
+#+TITLE: Jenkins Concepts
+#+ROAM_TAGS: jenkins ci-cd
+
+Jenkins is an open source automation server which enables developers around the world to reliably build, test, and deploy their software.
+
+* Jenkins Setup in this Project
+
+The project uses a Docker-in-Docker (dind) setup for Jenkins.
+
+- The =jenkins/docker-compose.yaml= defines two services: =jenkins= and =docker=.
+- The =jenkins= service runs the Jenkins server.
+- The =docker= service runs a Docker daemon.
+- The Jenkins container communicates with the Docker daemon in the =docker= container to run Docker commands, like building and pushing images. This is configured via the =DOCKER_HOST= environment variable.
+- The =jenkins/Dockerfile= customizes the official Jenkins image to include =docker-ce-cli= and =docker-compose=, so that you can execute docker commands from within your Jenkins jobs. It also installs the =blueocean= and =docker-workflow= plugins.
+
+* [[file:jenkins_pipeline.org][Jenkins Pipeline]]
+  - Jenkins Pipelines are defined using a text-based =Jenkinsfile=.

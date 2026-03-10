@@ -1,0 +1,19 @@
+
+:PROPERTIES:
+:ID:       20251104-docker-compose-commands
+:END:
+#+TITLE: Docker Compose Commands
+#+ROAM_TAGS: docker docker-compose cli
+
+* Commands
+
+** =docker-compose up=
+   - This command is used to start the services defined in a =docker-compose.yml= file.
+   - It creates and starts containers for each service.
+   - If you run =docker-compose up= without the =-d= flag, it will run in the foreground and you will see the logs from all the containers.
+   - The =-d= or =--detach= flag runs the containers in the background.
+   - =docker-compose up -d jenkins= will specifically start only the =jenkins= service and its dependencies (in this case, the =docker= service because of =depends_on=).
+
+** =docker-compose down=
+   - This command stops and removes the containers, networks, and volumes created by =docker-compose up=.
+   - It's a clean way to bring down your entire application stack.

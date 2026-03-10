@@ -1,0 +1,109 @@
+:PROPERTIES:
+:ID:       20251104-jenkins-pipeline
+:END:
+#+TITLE: Jenkins Pipeline
+#+file_tags: :jenkins:pipeline:groovy:
+
+A Jenkins Pipeline is a suite of plugins which supports implementing and integrating continuous delivery pipelines into Jenkins. The definition of a Jenkins Pipeline is written into a text file (called a =Jenkinsfile=) which in turn can be committed to a project's source control repository.
+
+The =jenkins/Jenkinsfile.scaffold= is a basic example of a declarative pipeline.
+
+* Key Concepts in a Declarative =Jenkinsfile=
+
+** =pipeline=
+   - The top-level block that defines the entire pipeline.
+
+** =agent=
+   - Specifies where the entire Pipeline, or a specific stage, will execute in the Jenkins environment.
+   - =agent any= means the pipeline can run on any available agent.
+
+** =tools=
+   - Defines tools to be automatically installed and put on the =PATH=.
+   - The example file has a commented-out section for Maven.
+
+** =stages=
+   - A block that contains one or more =stage= directives.
+   - It's a major part of the pipeline, used to visualize the pipeline process.
+
+** =stage=
+   - A block that defines a conceptually distinct subset of tasks performed through the entire Pipeline (e.g. "Build", "Test", "Deploy" stages).
+   - The example has three stages: =one=, =two=, and =three=.
+
+** =steps=
+   - Contains one or more steps to be executed in a =stage=.
+   - =echo 'message'= prints a message to the console.
+   - =sh 'command'= executes a shell command.
+   - =sleep 4= pauses for 4 seconds.
+
+** =post=
+   - Defines actions that will be run at the end of the Pipeline's run.
+   - =always= will run regardless of the Pipeline's completion status.
+
+* Declarative vs. Scripted Pipelines
+
+Jenkins offers two ways to write pipelines: =Declarative= and =Scripted=.
+
+** Declarative Pipeline
+   - A more recent and simpler, more opinionated syntax.
+   - It provides a well-defined structure, which is great for most use cases.
+   - The code is written within a ~pipeline~ block.
+   - The =jenkins/Jenkinsfile.scaffold= is a declarative pipeline.
+
+#+begin_src groovy
+pipeline {
+    agent any
+    stages {
+        stage('Build') {
+            steps {
+                echo 'Building...'
+                sh './build.sh'
+            }
+        }
+        stage('Test') {
+            steps {
+                echo 'Testing...'
+                sh './test.sh'
+            }
+        }
+    }
+}
+#+end_src
+
+** Scripted Pipeline
+   - A more traditional, flexible, and programmatic way to define a pipeline using Groovy code.
+   - It gives you much more power and flexibility, but it can be more complex to write and maintain.
+   - The code is written within a ~node~ block.
+
+#+begin_src groovy
+node {
+    stage('Build') {
+        echo 'Building...'
+        sh './build.sh'
+    }
+    stage('Test') {
+        echo 'Testing...'
+        sh './test.sh'
+    }
+}
+#+end_src
+
+* Typical Pipeline Stages
+
+A CI/CD pipeline automates the steps to get your software from version control to your users. Here are some common stages:
+
+** 1. Get latest code
+   - This stage, often called =Checkout= or =Source=, pulls the latest version of the code from a source control repository like Git.
+   - Example step: ~git 'https://github.com/user/repo.git'~
+
+** 2. Build code
+   - In this stage, the source code is compiled into runnable artifacts.
+   - For a Java project, this might involve running =mvn clean install=.
+   - For a JavaScript project, you might run =npm install= and =npm run build=.
+
+** 3. Test code
+   - This stage runs automated tests to ensure the code is working as expected and that new changes haven't introduced any bugs (regressions).
+   - This can include unit tests, integration tests, and end-to-end tests.
+
+** 4. Deploy code
+   - Once the code is built and tested, this stage deploys the application to a server.
+   - This could be a staging environment for further testing or a production environment for users.

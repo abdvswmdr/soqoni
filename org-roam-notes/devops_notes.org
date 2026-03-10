@@ -1,0 +1,18 @@
+
+:PROPERTIES:
+:ID:       20251104-devops-notes
+:END:
+#+TITLE: DevOps Learning Notes
+#+ROAM_TAGS: devops docker jenkins
+
+This is a collection of notes for learning DevOps concepts.
+
+* Docker
+  - [[file:docker_compose_concepts.org][Docker Compose Concepts]]
+  - [[file:dockerfile_concepts.org][Dockerfile Concepts]]
+  - [[file:docker_compose_commands.org][Docker Compose Commands]]
+  - [[file:docker_layers.org][Docker Images, Containers, and Layers]]
+
+* Jenkins
+  - [[file:jenkins_concepts.org][Jenkins Concepts]]
+  - [[file:jenkins_pipeline.org][Jenkins Pipeline]]
