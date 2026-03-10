@@ -20,6 +20,7 @@ services:
       - "8000:8000"
     volumes:
       - cs-ansible:/root/workspace
+      - /home/abdvswmdr/bootcamp:/root/workspace/bootcamp
     networks:
       custom:
         ipv4_address: 192.168.61.10
