@@ -3,6 +3,8 @@ version: '3.0'
 networks:
   custom:
     driver: bridge
+    driver_opts:
+      com.docker.network.driver.mtu: "1450"
     ipam:
       driver: default
       config:
@@ -111,4 +113,5 @@ services:
     volumes:
       - jenkins-docker-certs:/certs/client
       - jenkins-data:/var/jenkins_home
+      - /etc/docker/daemon.json:/etc/docker/daemon.json
 
