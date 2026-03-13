@@ -19,14 +19,7 @@
       dest: /usr/local/bin/npm
       state: link
 
-  - name: download script to install yarn
-    get_url:
-      url: https://yarnpkg.com/install.sh
-      dest: /opt/yarn_install.sh
-      mode: 0755
-
   - name: install yarn
-    shell: /opt/yarn_install.sh > yarn_install.log
-    args:
-      creates: /root/.yarn/bin/yarn
-    ignore_errors: true
+    npm:
+      name: yarn
+      global: yes

@@ -5,4 +5,4 @@ additional:
     - maven
 
 carts:
-  artifact: https://ab-build-artifacts.s3.ap-south-1.amazonaws.com/udbc/carts.jar
+  artifact: http://jenkins:8080/job/soqonicart/job/package/5/artifact/target/carts.jar
