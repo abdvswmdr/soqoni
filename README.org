@@ -1,0 +1,76 @@
+#+HTML: <p><a href="LICENSE"><img alt="License: GPLv3" src="https://img.shields.io/badge/License-GPLv3-blue.svg"></a> &nbsp; <img alt="Ansible" src="https://img.shields.io/badge/Ansible-2.x-EE0000?logo=ansible&logoColor=white"> &nbsp; <img alt="Docker" src="https://img.shields.io/badge/Docker-Compose-2496ED?logo=docker&logoColor=white"> &nbsp; <img alt="Jenkins" src="https://img.shields.io/badge/Jenkins-2.556-D24939?logo=jenkins&logoColor=white"> &nbsp; <img alt="Kubernetes" src="https://img.shields.io/badge/Kubernetes-Minikube-326CE5?logo=kubernetes&logoColor=white"> &nbsp; <img alt="Istio" src="https://img.shields.io/badge/Istio-1.29-466BB0?logo=istio&logoColor=white"> &nbsp; <img alt="Prometheus" src="https://img.shields.io/badge/Prometheus-E6522C?logo=prometheus&logoColor=white"> &nbsp; <img alt="Grafana" src="https://img.shields.io/badge/Grafana-F46800?logo=grafana&logoColor=white"> &nbsp; <img alt="Azure" src="https://custom-icon-badges.demolab.com/badge/Microsoft%20Azure-0089D6?logo=msazure&logoColor=white"> &nbsp; <img alt="AKS" src="https://img.shields.io/badge/AKS-0078D4?logo=kubernetes&logoColor=white"> &nbsp; <img alt="Azure MySQL" src="https://img.shields.io/badge/Azure_MySQL-4479A1?logo=mysql&logoColor=white"></p>
+
+* Soqoni — Infrastructure
+
+Deployment and CI/CD infrastructure for the Soqoni microservices e-commerce platform. Provisions four services across Docker Compose nodes using Ansible, automated with a Jenkins pipeline, and fully deployable to Kubernetes with Istio service mesh and Prometheus monitoring.
+
+#+attr_html: :width 900px :align center :alt "Soqoni infrastructure overview"
+[[file:docs/infra-overview.png]]
+
+** Contents
+
+- [[#features][Features]]
+- [[#architecture][Architecture]]
+- [[#stack][Stack]]
+- [[#quickstart][Quickstart]]
+- [[#kubernetes-deployment][Kubernetes Deployment]]
+- [[#repository-layout][Repository Layout]]
+- [[#license][License]]
+
+** Features
+
+- One-command stack startup with Docker Compose (~sudo docker compose up -d~)
+- Jenkins CI/CD pipelines for automated build, test, and Docker Hub push
+- Ansible roles deploy each service idempotently to isolated nodes
+- Kubernetes manifests with Ingress, HPA, and rolling update strategy
+- Istio service mesh — mTLS, traffic splitting, canary deployments, fault injection
+- Prometheus + Grafana monitoring via ~kube-prometheus-stack~
+- Kiali topology graph and Jaeger distributed tracing
+
+** Architecture
+
+#+attr_html: :width 900px :align center :alt "Soqoni architecture diagram"
+[[file:docs/architecture.png]]
+
+
+** Kubernetes Deployment
+
+#+BEGIN_SRC bash
+# Prerequisites: minikube, kubectl, helm
+
+minikube start --cpus=4 --memory=8192
+minikube addons enable ingress
+
+# Apply all manifests
+kubectl apply -f ../soqoni-k8s/
+
+# Install monitoring stack
+helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
+helm install monitoring prometheus-community/kube-prometheus-stack
+
+# Install Istio
+istioctl install --set profile=demo -y
+kubectl label namespace default istio-injection=enabled
+
+open http://$(minikube ip)
+#+END_SRC
+
+** Repository Layout
+
+#+BEGIN_SRC
+soqoni/
+  setup/
+    docker-compose.yml     # all infrastructure containers + network
+    Dockerfile             # custom Jenkins image (2.556-jdk21)
+  ansible/
+    environments/dev       # inventory: frontend, catalogue, carts nodes
+    group_vars/            # per-host variables (ports, artifact URLs)
+    roles/                 # nodejs, catalogue, mysql, carts, mongodb
+    frontend.yml           # deployment playbooks
+    catalogue.yml
+    carts.yml
+#+END_SRC
+
+** License
+
+[[LICENSE][GNU General Public License v3.0]]

@@ -1,0 +1,35 @@
+@startuml c2-containers
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
+!define FONTAWESOME https://raw.githubusercontent.com/tupadr3/plantuml-icon-font-sprites/master/font-awesome-5
+!include FONTAWESOME/cloud.puml
+!include <logos/nodejs>
+!include <logos/go>
+!include <logos/java>
+!include <logos/nginx>
+!include <logos/mysql>
+!include <logos/mongodb>
+
+LAYOUT_WITH_LEGEND()
+title Soqoni — Container Diagram (AKS Deployment)
+
+Person(customer, "Customer", "Web browser")
+
+System_Boundary(aks, "Azure Kubernetes Service") {
+    Container(ingress, "nginx Ingress", "Kubernetes Ingress Controller", "Routes /catalogue → catalogue\nRoutes / → frontend\nTLS termination", $sprite="nginx")
+    Container(frontend, "soqonifrontend", "Node.js 20 / Express", "Serves web UI\nProxies API calls to backend services\nManages customer session (UUID)", $sprite="nodejs")
+    Container(catalogue, "soqonicatalogue", "Go 1.25 / go-kit", "REST API: product list, detail, tags\nLogging middleware per endpoint\nExposes /metrics for Prometheus", $sprite="go")
+    Container(carts, "soqonicart", "Java 17 / Spring Boot", "REST API: add, remove, view cart items\nPer-customer cart via session ID\nSpring Data MongoDB — no manual BSON", $sprite="java")
+}
+
+ContainerDb(mysql, "Azure MySQL Flexible Server", "MySQL 8.0 / Standard_B1ms", "socksdb: sock, tag, sock_tag tables\nFree tier — 750 hrs/mo", $sprite="mysql")
+ContainerDb(cosmos, "Azure Cosmos DB", "MongoDB API", "Per-customer cart documents\nAlways-free tier — 400 RU/s, 25 GB", $sprite="mongodb")
+
+Rel(customer, ingress, "HTTPS requests")
+Rel(ingress, frontend, "/ traffic", "HTTP")
+Rel(ingress, catalogue, "/catalogue traffic", "HTTP")
+Rel(frontend, catalogue, "GET /catalogue", "HTTP ClusterIP:80")
+Rel(frontend, carts, "GET/POST/DELETE /carts/{id}/items", "HTTP ClusterIP:80")
+Rel(catalogue, mysql, "SELECT / INSERT", "TCP 3306 + TLS")
+Rel(carts, cosmos, "CRUD cart documents", "MongoDB wire protocol")
+
+@enduml

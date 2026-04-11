@@ -1,0 +1,30 @@
+@startuml c1-system-context
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Context.puml
+!define FONTAWESOME https://raw.githubusercontent.com/tupadr3/plantuml-icon-font-sprites/master/font-awesome-5
+!include FONTAWESOME/cloud.puml
+!include FONTAWESOME/database.puml
+!include FONTAWESOME/chart_bar.puml
+!include <logos/docker>
+!include <logos/jenkins>
+
+LAYOUT_WITH_LEGEND()
+title Soqoni — System Context
+
+Person(customer, "Customer", "Browses products and manages cart via web browser")
+
+System(soqoni, "Soqoni Platform", "Microservices e-commerce platform:\ncatalogue, cart, frontend")
+
+System_Ext(dockerhub, "Docker Hub", "Container image registry\nStores built service images", $sprite="docker")
+System_Ext(azure_mysql, "Azure MySQL", "Managed relational DB\nProduct catalogue data", $sprite="database")
+System_Ext(cosmos, "Azure Cosmos DB", "Managed MongoDB-compatible DB\nShopping cart state", $sprite="database")
+System_Ext(datadog, "Datadog", "APM, log aggregation\nDashboards and alerts", $sprite="chart_bar")
+System_Ext(jenkins, "Jenkins CI", "Build, test, and push pipeline\nfor each microservice", $sprite="jenkins")
+
+Rel(customer, soqoni, "Uses", "HTTPS")
+Rel(jenkins, dockerhub, "Pushes SHA-tagged images")
+Rel(soqoni, dockerhub, "Pulls images from")
+Rel(soqoni, azure_mysql, "Reads/writes catalogue data", "TCP 3306 + TLS")
+Rel(soqoni, cosmos, "Reads/writes cart data", "MongoDB wire protocol")
+Rel(soqoni, datadog, "Sends metrics, traces, logs")
+
+@enduml
