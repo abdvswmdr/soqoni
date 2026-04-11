@@ -4,12 +4,6 @@
 
 Deployment and CI/CD infrastructure for the Soqoni microservices e-commerce platform. Provisions four services across Docker Compose nodes using Ansible, automated with a Jenkins pipeline, and fully deployable to Kubernetes with Istio service mesh and Prometheus monitoring.
 
-#+attr_html: :width 900px :align center :alt "Soqoni infrastructure overview"
-[[file:docs/c1-system-context.png]]
-
-#+attr_html: :width 900px :align center :alt "Soqoni infrastructure overview"
-[[file:docs/c2-containers.png]]
-
 ** Contents
 
 - [[#features][Features]]
@@ -32,11 +26,11 @@ Deployment and CI/CD infrastructure for the Soqoni microservices e-commerce plat
 
 ** Architecture
 
-#+attr_html: :width 900px :align center :alt "Soqoni architecture diagram"
-[[file:docs/c1-system-context.png
+#+attr_html: :width 900px :align center :alt "Soqoni infrastructure overview"
+[[file:docs/c1-system-context.png]]
 
-#+attr_html: :width 900px :align center :alt "Soqoni architecture diagram"
-[[file:docs/c2-containers.png
+#+attr_html: :width 900px :align center :alt "Soqoni infrastructure overview"
+[[file:docs/c2-containers.png]]
 
 ** Kubernetes Deployment
 
